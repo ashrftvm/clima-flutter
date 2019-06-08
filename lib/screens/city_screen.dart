@@ -38,17 +38,17 @@ class _CityScreenState extends State<CityScreen> {
                 padding: EdgeInsets.all(20.0),
                 child: Center(
                   child: TextField(
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.location_city, color: Colors.white,),
+                      decoration: InputDecoration(
+                        icon: Icon(
+                          Icons.location_city,
+                          color: Colors.white,
+                        ),
                         labelText: 'Enter the City',
-                    ),
-                    onChanged: (value){
-                      cityName = value;
-                    }
-                  ),
-
+                      ),
+                      onChanged: (value) {
+                        cityName = value;
+                      }),
                 ),
-
               ),
               FlatButton(
                 onPressed: () {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 import 'package:clima/services/weather.dart';
+import 'city_screen.dart';
 
 class LocationScreen extends StatefulWidget {
   LocationScreen({this.weatherData});
@@ -22,7 +23,11 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   void updateUI(dynamic data) {
-    print(data);
+    if(data == null){
+      print('null');
+    }else{
+      print('with data $data' );
+    }
     setState(() {
       if (data == null) {
         temperature = 0;
@@ -30,8 +35,14 @@ class _LocationScreenState extends State<LocationScreen> {
         icon = 'Error';
         message = 'Cant get location data';
         return;
-      } else {
-        double temp = data['main']['temp'];
+      }else if(data['cod'] == '404'){
+        temperature = 0;
+        cityName = '';
+        icon = 'Error';
+        message = 'Cant get location data';
+        return;
+        }else {
+        double temp = data['main']['temp'].toDouble();
         temperature = temp.toInt();
         cityName = data['name'];
         var condition = data['weather'][0]['id'];
@@ -64,8 +75,8 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {
-                      var weatherData = WeatherModel().getWeatherData();
+                    onPressed: () async {
+                      var weatherData = await WeatherModel().getWeatherData();
                       updateUI(weatherData);
                     },
                     child: Icon(
@@ -74,7 +85,16 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var typedName = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CityScreen(),
+                        ),
+                      );
+                      var cityWeatherData = await WeatherModel().getCityWeatherData(typedName);
+                      updateUI(cityWeatherData);
+                    },
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,
